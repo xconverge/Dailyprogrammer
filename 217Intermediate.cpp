@@ -54,17 +54,27 @@ int main()
 			inputs[i].erase(0, pos + delim.length());
 		}
 
-		bool notFound = true;
+		int vowelCnt[4] = { 0, 0, 0, 0 };
+		int max = 0;
+		int maxIdx = 0;
+
 		for (int k = 0; k < 4; k++)
 		{
-			if ((msg[k].find("We") != string::npos || msg[k].find("Daily") != string::npos || msg[k].find("Fire") != string::npos) && notFound)
+			for (int m = 0; m < msg[k].size(); m++)
 			{
-				cout << planets[k] + ": " + msg[k] << endl;
-				notFound = false;
+				if (msg[k][m] == 'a') vowelCnt[k]++;
+				if (msg[k][m] == 'e') vowelCnt[k]++;
+				if (msg[k][m] == 'i') vowelCnt[k]++;
+			}
+
+			if (vowelCnt[k] > max)
+			{
+				maxIdx = k;
+				max = vowelCnt[k];
 			}
 		}
+		cout << msg[maxIdx] << endl;
 	}
-
 	return 0;
 }
 
