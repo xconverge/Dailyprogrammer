@@ -6,17 +6,26 @@
 
 using namespace std;
 
+// Number of inversions counter
 double numInversions = 0;
+
+//Size of input file desired (mostly used for debug to test on smaller subsets)
 #define SIZE (100000)
 
 void Merge(int a[], const int low, const int high, int mid)
 {		
+	//Clone the array for processing the left and right sides in place before copying back to a[]
 	int * tmp = new int[high + 1 - low];
+
+	//Index for filling the main array
 	int idx = 0;
 
+	//Index for "left" side
 	int i = low;
+	//Index for "right" side
 	int j = mid + 1;
 
+	//While both sides still have elements, compare values to merge into temp array
 	while ((i <= mid) && (j <= high))
 	{
 		if (a[i] <= a[j])
@@ -27,12 +36,14 @@ void Merge(int a[], const int low, const int high, int mid)
 		else
 		{
 			tmp[idx] = a[j];
+			//If a left side value is added before a right side, then there are inversions related to the number of elements left
 			numInversions +=  mid + 1 - i;
 			j++;
 		}
 		idx++;
 	}
 	
+	//Only the left side has elements left, fill the temp array with them
 	while (i <= mid)
 	{
 		tmp[idx] = a[i];
@@ -40,21 +51,25 @@ void Merge(int a[], const int low, const int high, int mid)
 		idx++;
 	}
 
+	//Only the right side has elements left, fill the temp array with them
 	while (j <= high)
 	{
 		tmp[idx] = a[j];
 		j++;
 		idx++;
 	}
-	
+
+	//Copy the temp array back into a[] before returning to complete the in place merge
 	for (int p = 0; p <= high-low; p++)
 	{
 		a[p + low] = tmp[p];
 	}
 
+	//Clear temporary memory
 	delete[] tmp;
 }
 
+//Recursive function to sort elements
 void merge_sort(int a[], int low, int high)
 {
 	int mid;
@@ -68,9 +83,9 @@ void merge_sort(int a[], int low, int high)
 	}
 }
 
+//Brute force inversion counter for verification
 void BruteForce(int a[])
 {
-	//Brute force inversion counter for verification
 	double bruteCnt = 0;
 	for (int i = 0; i < SIZE - 1; i++)
 	{
@@ -86,10 +101,12 @@ void BruteForce(int a[])
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	ifstream file("C:/Users/sean/Downloads/IntegerArray.txt", ios::in);
+	//Open file to process
+	ifstream file("C:/Users/sean/Downloads/test.txt", ios::in);
 
 	int a[SIZE];
 
+	//Create array of elements from the file
 	int num;
 	for (int i = 0; i < SIZE; i++)
 	{
@@ -97,13 +114,15 @@ int _tmain(int argc, _TCHAR* argv[])
 		a[i] = num;
 	}
 	file.close();
+
+	//Brute force to get a test result
 	BruteForce(a);
 
+	//Merge sort the elements and count inversions
 	merge_sort(a, 0, SIZE-1);
 
 	printf("Merge Inversions: %.0f\n", numInversions);
 
 	getchar();
-
 	return 0;
 }
